@@ -8,7 +8,98 @@
   </head>
 
   <body>
-    Hello world
+    <header>
+      <nav>
+        <div class="logo">Bookstore</div>
+        <div class="user">Hellboyd</div>
+      </nav>
+    </header>
+    <main>
+      <section class="table-actions">
+        <input placeholder="Search books" id="input-search" />
+        <button class="btn add" id="btn-add-book">Add book</button>
+      </section>
+
+      <section>
+        <table id="books-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Author</th>
+              <th>Topic</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </section>
+    </main>
+
+    <footer>
+      <div>Copyright</div>
+      <div>Source code</div>
+    </footer>
+
+    <dialog id="dialog-add-book" open>
+      <form>
+        <header>
+          <h2>Add book</h2>
+          <button
+            type="submit"
+            aria-label="close"
+            formmethod="dialog"
+            formnovalidate
+          >
+            X
+          </button>
+        </header>
+        <label
+          >Name:
+          <input type="text" name="name" />
+        </label>
+        <label
+          >Author:
+          <input type="text" name="author" />
+        </label>
+        <label
+          >Topic:
+          <select name="topic" id="topic-select"></select>
+        </label>
+        <footer>
+          <button type="submit">Create</button>
+        </footer>
+      </form>
+    </dialog>
+
+    <dialog id="dialog-delete-book">
+      <form>
+        <header>
+          <h2>Delete book</h2>
+          <button
+            type="submit"
+            aria-label="close"
+            formmethod="dialog"
+            formnovalidate
+          >
+            X
+          </button>
+        </header>
+
+        <p class="msg-delete"></p>
+        <footer>
+          <button type="submit">Delete</button>
+          <button
+            type="submit"
+            aria-label="close"
+            formmethod="dialog"
+            formnovalidate
+          >
+            Cancel
+          </button>
+        </footer>
+      </form>
+    </dialog>
+
     <script src="script.js"></script>
   </body>
 </html>
