@@ -1,3 +1,49 @@
+class Dep {
+  constructor() {
+    this.subscribers = new Set();
+  }
+
+  depend() {
+    if (activeUpdate) {
+      this.subscribers.add(activeUpdate);
+    }
+  }
+
+  notify() {
+    this.subscribers.forEach((subscriber) => subscriber());
+  }
+}
+
+let activeUpdate;
+function autorun(update) {
+  function wrappedUpdate() {
+    activeUpdate = wrappedUpdate;
+    update();
+  }
+  wrappedUpdate();
+}
+
+function observe(obj) {
+  Object.keys(obj).forEach((key) => {
+    let internalValue = obj[key];
+    let dep = new Dep();
+    Object.defineProperty(obj, key, {
+      get() {
+        dep.depend();
+        return internalValue;
+      },
+      set(newValue) {
+        const isChanged = internalValue !== newValue;
+        if (isChanged) {
+          internalValue = newValue;
+          dep.notify();
+          renderTable();
+        }
+      },
+    });
+  });
+}
+
 const topicOptions = [
   {
     text: "Programming",
@@ -33,77 +79,17 @@ const tableData = [
     topic: "devops",
   },
 ];
+
 let state = {
   tableData,
+  searchText: "",
 };
-window.Dep = class Dep {
-  constructor() {
-    this.subscribers = new Set();
-  }
-
-  depend() {
-    console.log("depend");
-    if (activeUpdate) {
-      // register the current active update as a subscriber
-      this.subscribers.add(activeUpdate);
-    }
-  }
-
-  notify() {
-    console.log("notify");
-    // run all subscriber functions
-    this.subscribers.forEach((subscriber) => subscriber());
-  }
-};
-
-let activeUpdate;
-function autorun(update) {
-  function wrappedUpdate() {
-    activeUpdate = wrappedUpdate;
-    update();
-  }
-  wrappedUpdate();
-}
-
-function observe(obj) {
-  Object.keys(obj).forEach((key) => {
-    let internalValue = obj[key];
-    let dep = new Dep();
-    console.log("observe", {
-      internalValue,
-      dep,
-    });
-    Object.defineProperty(obj, key, {
-      get() {
-        console.log("11111111");
-        dep.depend();
-        return internalValue;
-      },
-      set(newValue) {
-        const isChanged = internalValue !== newValue;
-        if (isChanged) {
-          internalValue = newValue;
-          dep.notify();
-          if (key === "tableData") {
-            renderTable();
-          }
-        }
-      },
-    });
-  });
-}
-
-observe(state);
-
-autorun(() => {
-  console.log("state is", state);
-});
-
 let deleteRowIndex = -1;
 
 const dialogAddBook = document.getElementById("dialog-add-book");
 const dialogDeleteBook = document.getElementById("dialog-delete-book");
 const inputSearch = document.getElementById("input-search");
+const btnAddBook = document.getElementById("btn-add-book");
 
 function renderTopicOptions() {
   const selectRef = document.getElementById("topic-select");
@@ -118,15 +104,17 @@ function renderTopicOptions() {
 }
 
 function renderTable() {
-  const { tableData } = state;
-  console.log("renderTable: ", state.tableData);
-  const searchText = inputSearch.value;
+  const { tableData, searchText } = state;
   const data = tableData.filter((row) => {
     return row.name.toLowerCase().includes(searchText.toLowerCase());
   });
+
   const tableRef = document.getElementById("books-table");
+  const tbody = tableRef.getElementsByTagName("tbody")[0];
+  tbody.innerHTML = "";
+
   data.forEach((rowData, rowIndex) => {
-    const newRow = tableRef.insertRow();
+    const newRow = tbody.insertRow();
     tableColumns.forEach((column) => {
       const newCell = newRow.insertCell();
       let newText = null;
@@ -153,25 +141,48 @@ function renderTable() {
   });
 }
 
-function addEventDeleteBook() {
+function handleAddBook() {
+  const addBookForm = dialogAddBook.getElementsByTagName("form")[0];
+  addBookForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const formData = new FormData(addBookForm);
+    const book = {};
+    for (const pair of formData.entries()) {
+      book[pair[0]] = pair[1];
+    }
+    state.tableData = [...state.tableData, book];
+    localStorage.setItem("state", JSON.stringify(state));
+    dialogAddBook.close();
+  });
+}
+
+function handleDeleteBook() {
   const deleteBookForm = dialogDeleteBook.getElementsByTagName("form")[0];
   deleteBookForm.addEventListener("submit", (event) => {
     event.preventDefault();
     if (event.submitter.ariaLabel !== "close") {
-      // state.tableData.splice(deleteRowIndex, 1);
-      state.tableData = [];
+      state.tableData = state.tableData.filter(
+        (_, index) => index !== deleteRowIndex
+      );
       localStorage.setItem("state", JSON.stringify(state));
     }
     dialogDeleteBook.close();
   });
 }
 
-function addEventAddBook() {
-  const addBookForm = dialogAddBook.getElementsByTagName("form")[0];
-  addBookForm.addEventListener("submit", (event) => {
-    event.preventDefault();
-    const formData = new FormData(addBookForm);
-    console.log("formData", formData);
+function handleClickBtnAddBook() {
+  btnAddBook.addEventListener("click", () => dialogAddBook.showModal());
+}
+
+function handleChangeInputSearch() {
+  inputSearch.addEventListener("input", (event) => {
+    state.searchText = event.target.value;
+  });
+}
+
+function handleCloseDialogDeleteBook() {
+  dialogDeleteBook.addEventListener("close", () => {
+    deleteRowIndex = -1;
   });
 }
 
@@ -179,15 +190,22 @@ function init() {
   if (!localStorage.getItem("state")) {
     localStorage.setItem("state", JSON.stringify(state));
   } else {
-    state = JSON.parse(localStorage.getItem("state"));
+    state.tableData = JSON.parse(localStorage.getItem("state")).tableData;
   }
 
-  renderTable();
-  renderTopicOptions();
-  addEventDeleteBook();
-  dialogDeleteBook.addEventListener("close", () => {
-    deleteRowIndex = -1;
+  observe(state);
+  autorun(() => {
+    console.log("state is: ", state);
   });
+
+  renderTopicOptions();
+  renderTable();
+
+  handleAddBook();
+  handleDeleteBook();
+  handleClickBtnAddBook();
+  handleChangeInputSearch();
+  handleCloseDialogDeleteBook();
 }
 
 init();
