@@ -17,7 +17,7 @@
     <main>
       <section class="table-actions">
         <input placeholder="Search books" id="input-search" />
-        <button class="btn add" id="btn-add-book">Add book</button>
+        <button class="btn" id="btn-add-book">Add book</button>
       </section>
       <section>
         <table id="books-table">
@@ -37,7 +37,7 @@
     <dialog id="dialog-add-book">
       <form>
         <header>
-          <h2>Add book</h2>
+          <div class="title">Add book</div>
           <button
             type="submit"
             aria-label="close"
@@ -48,19 +48,19 @@
           </button>
         </header>
         <label
-          >Name:
+          >Name
           <input type="text" name="name" />
         </label>
         <label
-          >Author:
+          >Author
           <input type="text" name="author" />
         </label>
         <label
-          >Topic:
+          >Topic
           <select name="topic" id="topic-select"></select>
         </label>
         <footer>
-          <button type="submit">Create</button>
+          <button class="btn" type="submit">Create</button>
         </footer>
       </form>
     </dialog>
@@ -68,7 +68,7 @@
     <dialog id="dialog-delete-book">
       <form>
         <header>
-          <h2>Delete book</h2>
+          <div class="title">Delete book</div>
           <button
             type="submit"
             aria-label="close"
@@ -80,8 +80,9 @@
         </header>
         <p class="msg-delete"></p>
         <footer>
-          <button type="submit">Delete</button>
+          <button class="btn btn-flat" type="submit">Delete</button>
           <button
+            class="btn"
             type="submit"
             aria-label="close"
             formmethod="dialog"

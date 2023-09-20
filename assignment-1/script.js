@@ -67,16 +67,19 @@ const tableData = [
     name: "Refactoring",
     author: "Martin Fowler",
     topic: "programming",
+    rowId: 0,
   },
   {
     name: "Designing Data-Intensive Applications",
     author: "Martin Kleppmann",
     topic: "database",
+    rowId: 1,
   },
   {
     name: "The Phoenix Project",
     author: "Gene Kim",
     topic: "devops",
+    rowId: 2,
   },
 ];
 
@@ -84,10 +87,12 @@ let state = {
   tableData,
   searchText: "",
 };
-let deleteRowIndex = -1;
+let deleteRowId = -1;
 
 const dialogAddBook = document.getElementById("dialog-add-book");
 const dialogDeleteBook = document.getElementById("dialog-delete-book");
+const addBookForm = dialogAddBook.getElementsByTagName("form")[0];
+const deleteBookForm = dialogDeleteBook.getElementsByTagName("form")[0];
 const inputSearch = document.getElementById("input-search");
 const btnAddBook = document.getElementById("btn-add-book");
 
@@ -113,7 +118,7 @@ function renderTable() {
   const tbody = tableRef.getElementsByTagName("tbody")[0];
   tbody.innerHTML = "";
 
-  data.forEach((rowData, rowIndex) => {
+  data.forEach((rowData) => {
     const newRow = tbody.insertRow();
     tableColumns.forEach((column) => {
       const newCell = newRow.insertCell();
@@ -123,7 +128,7 @@ function renderTable() {
         newText.innerText = "Delete";
         newText.classList.add("text-delete");
         newText.addEventListener("click", () => {
-          deleteRowIndex = rowIndex;
+          deleteRowId = rowData["rowId"];
           dialogDeleteBook.showModal();
           const msgDeleteRef =
             dialogDeleteBook.getElementsByClassName("msg-delete")[0];
@@ -142,27 +147,28 @@ function renderTable() {
 }
 
 function handleAddBook() {
-  const addBookForm = dialogAddBook.getElementsByTagName("form")[0];
   addBookForm.addEventListener("submit", (event) => {
     event.preventDefault();
-    const formData = new FormData(addBookForm);
-    const book = {};
-    for (const pair of formData.entries()) {
-      book[pair[0]] = pair[1];
+    if (event.submitter.ariaLabel !== "close") {
+      const formData = new FormData(addBookForm);
+      const book = {};
+      for (const pair of formData.entries()) {
+        book[pair[0]] = pair[1];
+      }
+      book.rowId = new Date().getTime();
+      state.tableData = [...state.tableData, book];
+      localStorage.setItem("state", JSON.stringify(state));
     }
-    state.tableData = [...state.tableData, book];
-    localStorage.setItem("state", JSON.stringify(state));
     dialogAddBook.close();
   });
 }
 
 function handleDeleteBook() {
-  const deleteBookForm = dialogDeleteBook.getElementsByTagName("form")[0];
   deleteBookForm.addEventListener("submit", (event) => {
     event.preventDefault();
     if (event.submitter.ariaLabel !== "close") {
       state.tableData = state.tableData.filter(
-        (_, index) => index !== deleteRowIndex
+        (row) => row.rowId !== deleteRowId
       );
       localStorage.setItem("state", JSON.stringify(state));
     }
@@ -180,9 +186,23 @@ function handleChangeInputSearch() {
   });
 }
 
+function handleCloseDialogAddBook() {
+  dialogAddBook.addEventListener("close", () => {
+    addBookForm.reset();
+  });
+}
+
 function handleCloseDialogDeleteBook() {
   dialogDeleteBook.addEventListener("close", () => {
-    deleteRowIndex = -1;
+    deleteRowId = -1;
+  });
+}
+
+function handlePressEnterOnForm(form) {
+  form.addEventListener("keypress", function (e) {
+    if (e.keyCode === 13) {
+      e.preventDefault();
+    }
   });
 }
 
@@ -201,10 +221,13 @@ function init() {
   renderTopicOptions();
   renderTable();
 
+  handlePressEnterOnForm(dialogAddBook);
+  handlePressEnterOnForm(dialogDeleteBook);
   handleAddBook();
   handleDeleteBook();
   handleClickBtnAddBook();
   handleChangeInputSearch();
+  handleCloseDialogAddBook();
   handleCloseDialogDeleteBook();
 }
 
