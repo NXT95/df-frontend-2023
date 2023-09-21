@@ -79,6 +79,10 @@ select {
   padding: 0 8px;
 }
 
+button {
+  cursor: pointer;
+}
+
 dialog {
   width: 300px;
   border: 2px solid #d6dce1;
@@ -98,12 +102,8 @@ dialog form header .title {
 }
 
 dialog form header button {
-  width: 30px;
-  height: 28px;
   background-color: white;
   border: none;
-  font-size: 15px;
-  cursor: pointer;
 }
 
 dialog form label {
