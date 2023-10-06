@@ -1,7 +1,9 @@
 import { Fragment } from 'react'
 import Link from 'next/link'
-import { tableColumns, topicOptions } from '../constant'
+import { tableColumns } from '../constant'
 import { Book } from '../types'
+import { Button } from './Button'
+import { getTextOfTopic } from '../utils'
 
 export default function Table({
   dataTable,
@@ -15,39 +17,63 @@ export default function Table({
     }
   }
 
-  function getTextOfTopic(value: string) {
-    return topicOptions.find((option) => option.value === value)?.text
-  }
-
-  function renderTd(column: string, book: Book) {
-    if (column === 'action') {
+  function renderTd(columnName: string, book: Book) {
+    if (columnName === 'action') {
       return (
-        <td className="text-delete">
-          <span onClick={handleClickDeleteBook(book)}>Delete</span>|
-          <Link href={`/books/${book.rowId}`}>View</Link>
+        <td className="cursor-pointer border-2 border-solid border-slate-300 px-1 text-red-500">
+          <Button
+            className="underline"
+            appearance="default"
+            onClick={handleClickDeleteBook(book)}
+          >
+            Delete
+          </Button>
+          |
+          <Link className="underline" href={`/books/${book.rowId}`}>
+            View
+          </Link>
         </td>
       )
     }
-    if (column === 'topic') {
-      return <td>{getTextOfTopic(book[column])}</td>
+    if (columnName === 'topic') {
+      return (
+        <td className="border-2 border-solid border-slate-300 px-1">
+          {getTextOfTopic(book[columnName])}
+        </td>
+      )
     }
-    return <td>{book[column]}</td>
+    return (
+      <td className="border-2 border-solid border-slate-300 px-1">
+        {book[columnName]}
+      </td>
+    )
   }
 
   return (
-    <table>
+    <table className="w-full min-w-[680px] border-collapse border-2 border-solid border-slate-300 text-left">
+      <colgroup>
+        {tableColumns.map(({ width }, index) => (
+          <col key={index} width={width} />
+        ))}
+      </colgroup>
       <thead>
         <tr>
-          {tableColumns.map((column, index) => (
-            <th key={index}>{column}</th>
+          {tableColumns.map(({ name }, index) => (
+            <th
+              key={index}
+              scope="col"
+              className="border-2 border-solid border-slate-300 px-1 capitalize"
+            >
+              {name}
+            </th>
           ))}
         </tr>
       </thead>
       <tbody>
         {dataTable.map((book) => (
           <tr key={book.rowId}>
-            {tableColumns.map((column) => (
-              <Fragment key={column}>{renderTd(column, book)}</Fragment>
+            {tableColumns.map(({ name }) => (
+              <Fragment key={name}>{renderTd(name, book)}</Fragment>
             ))}
           </tr>
         ))}
@@ -59,5 +85,5 @@ export default function Table({
 interface TableProps {
   dataTable: Book[]
   dialogDeleteBookRef: React.RefObject<HTMLDialogElement>
-  setDeleteBook: React.Dispatch<React.SetStateAction<Book | null>>
+  setDeleteBook: React.Dispatch<React.SetStateAction<Book | undefined>>
 }

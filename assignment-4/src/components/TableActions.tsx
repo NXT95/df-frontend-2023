@@ -1,3 +1,5 @@
+import { Button } from './Button'
+
 export default function TableActions({
   dialogAddBookRef,
   setSearchText,
@@ -6,20 +8,24 @@ export default function TableActions({
     setSearchText(event.target.value)
   }
 
-  function handleClickAddBook() {
+  const handleClickAddBook = () => {
     dialogAddBookRef.current?.showModal()
   }
 
   return (
-    <section className="table-actions">
+    <section className="flex justify-end pb-5">
       <input
-        id="input-search"
+        className="mr-4 min-w-[200px] max-w-[280px] flex-1 rounded border-2 border-solid border-slate-300 px-2"
         placeholder="Search books"
         onChange={handleChangeSearchText}
       />
-      <button className="btn" id="btn-add-book" onClick={handleClickAddBook}>
+      <Button
+        className="h-[36px] min-w-[80px] px-2.5"
+        appearance="primary"
+        onClick={handleClickAddBook}
+      >
         Add book
-      </button>
+      </Button>
     </section>
   )
 }

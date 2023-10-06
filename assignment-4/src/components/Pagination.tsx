@@ -1,7 +1,8 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import classNames from 'classnames'
+import cn from 'classnames'
+import { Button } from './Button'
 
 export default function Pagination({
   current,
@@ -33,16 +34,26 @@ export default function Pagination({
   }
 
   return (
-    <ul className="pagination">
+    <ul className="m-0 box-border list-none p-0 text-sm text-black">
       {pageList.map((item) => (
         <li
           key={item}
-          className={classNames('pagination-item', {
-            'pagination-item-active': current === item,
-            'no-margin': pageList.length === item,
-          })}
+          className={cn(
+            'me-2 inline-block h-[30px] w-[30px] cursor-pointer select-none list-none rounded-md border border-solid border-transparent bg-transparent text-center align-middle outline-0 transition duration-200 hover:bg-gray-300',
+            {
+              '!border-[#1677ff] bg-white font-semibold text-[#1677ff] hover:!bg-white':
+                current === item,
+              'me-0': pageList.length === item,
+            },
+          )}
         >
-          <button onClick={handleChangePage(item)}>{item}</button>
+          <Button
+            className="h-full w-full bg-transparent align-sub"
+            appearance="default"
+            onClick={handleChangePage(item)}
+          >
+            {item}
+          </Button>
         </li>
       ))}
     </ul>

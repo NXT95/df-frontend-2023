@@ -2,7 +2,6 @@
 
 import React from 'react'
 
-export default function Error(props) {
-  console.log('Error', { props })
+export default function Error() {
   return <h1>Error</h1>
 }

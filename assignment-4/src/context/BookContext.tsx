@@ -7,6 +7,7 @@ import {
   createContext,
   useContext,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from 'react'
@@ -19,7 +20,7 @@ interface IBookContext {
   searchText: string
   setSearchText: Dispatch<SetStateAction<string>>
   deleteBook: Book | null
-  setDeleteBook: Dispatch<SetStateAction<Book | null>>
+  setDeleteBook: Dispatch<SetStateAction<Book | undefined>>
   currentPage: number
   setCurrentPage: Dispatch<SetStateAction<number>>
   dialogDeleteBookRef: RefObject<HTMLDialogElement>
@@ -35,7 +36,7 @@ function BookProvider(props) {
   const [error, setError] = useState<string | null>(null)
   const [books, setBooks] = useState<Book[]>([])
   const [searchText, setSearchText] = useState('')
-  const [deleteBook, setDeleteBook] = useState<Book | null>(null)
+  const [deleteBook, setDeleteBook] = useState<Book | undefined>(undefined)
   const [currentPage, setCurrentPage] = useState(0)
 
   useEffect(() => {
@@ -51,18 +52,20 @@ function BookProvider(props) {
     }
   }, [])
 
-  const value = {
-    books,
-    setBooks,
-    searchText,
-    setSearchText,
-    deleteBook,
-    setDeleteBook,
-    currentPage,
-    setCurrentPage,
-    dialogAddBookRef,
-    dialogDeleteBookRef,
-  }
+  const value = useMemo(() => {
+    return {
+      books,
+      setBooks,
+      searchText,
+      setSearchText,
+      deleteBook,
+      setDeleteBook,
+      currentPage,
+      setCurrentPage,
+      dialogAddBookRef,
+      dialogDeleteBookRef,
+    }
+  }, [books, currentPage, deleteBook, searchText])
 
   if (error) {
     return <h1>{error.toUpperCase()}</h1>

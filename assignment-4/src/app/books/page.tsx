@@ -28,18 +28,20 @@ export default function Books() {
   )
 
   return (
-    <main>
+    <>
       <TableActions
         dialogAddBookRef={dialogAddBookRef}
         setSearchText={setSearchText}
       />
       <section>
-        <Table
-          dataTable={dataTable}
-          dialogDeleteBookRef={dialogDeleteBookRef}
-          setDeleteBook={setDeleteBook}
-        />
-        <div className="wrap-pagination">
+        <div className="overflow-x-auto">
+          <Table
+            dataTable={dataTable}
+            dialogDeleteBookRef={dialogDeleteBookRef}
+            setDeleteBook={setDeleteBook}
+          />
+        </div>
+        <div className="mt-5 text-right">
           <Pagination
             current={currentPage}
             total={total}
@@ -48,6 +50,6 @@ export default function Books() {
           />
         </div>
       </section>
-    </main>
+    </>
   )
 }
