@@ -1,36 +1,34 @@
 'use client'
 
-import { forwardRef, useEffect, useRef } from 'react'
-import Image from 'next/image'
-import closeIcon from '@/assets/icons/close.svg'
-import { Book } from '../../../../types'
-import { TOPIC_OPTIONS } from '../../../../constant'
-import { Button } from '../../../../components/Button'
+import { useEffect, useRef } from 'react'
+import { TOPIC_OPTIONS } from 'constant'
 import { Dialog } from 'components/Dialog/Dialog'
+import { Button } from 'components/Button'
+import { useBook } from 'context/BookContext'
 
 export default function DialogAddBook({ onSubmit }: Props) {
-  const dialogRef = useRef<HTMLDialogElement>(null)
+  const { dialogAddBookRef } = useBook()
   const formRef = useRef<HTMLFormElement>(null)
 
-  const onClose = () => {
-    dialogRef.current?.close()
+  const handleClose = () => {
+    dialogAddBookRef.current?.close()
   }
 
   const handleSubmit =
     (cbFunc: React.FormEventHandler<HTMLFormElement>) =>
     (event: React.FormEvent<HTMLFormElement>) => {
       cbFunc(event)
-      dialogRef.current?.close()
+      dialogAddBookRef.current?.close()
     }
 
   useEffect(() => {
-    dialogRef.current?.addEventListener('close', () => {
+    dialogAddBookRef.current?.addEventListener('close', () => {
       formRef.current?.reset()
     })
-  }, [dialogRef])
+  }, [dialogAddBookRef])
 
   return (
-    <Dialog ref={dialogRef} title="Add book" onClose={onClose}>
+    <Dialog ref={dialogAddBookRef} title="Add book" onClose={handleClose}>
       <form onSubmit={handleSubmit(onSubmit)} ref={formRef}>
         <label className="block w-full text-sm" htmlFor="name">
           Name

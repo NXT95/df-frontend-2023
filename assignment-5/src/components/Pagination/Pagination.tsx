@@ -2,14 +2,14 @@
 
 import { useEffect, useState } from 'react'
 import cn from 'classnames'
-import { Button } from '../../../../components/Button'
+import { Button } from 'components/Button'
 
-export default function Pagination({
+export const Pagination = ({
   current,
   total,
   pageSize,
   onChangePage,
-}: PaginationProps) {
+}: PaginationProps) => {
   const [pageCount, setPageCount] = useState(0)
   const pageList = Array.from({ length: pageCount }, (_, i) => i + 1)
 

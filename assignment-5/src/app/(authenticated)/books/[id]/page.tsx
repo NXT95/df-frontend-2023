@@ -1,9 +1,9 @@
 'use client'
 
 import { useParams, useRouter } from 'next/navigation'
-import { useBook } from '../../../../context/BookContext'
-import { Button } from '../../../../components/Button'
-import { getTextOfTopic } from '../../../../utils'
+import { useBook } from 'context/BookContext'
+import { Button } from 'components/Button'
+import { getTextOfTopic } from 'utils'
 
 export default function BookDetail() {
   const router = useRouter()

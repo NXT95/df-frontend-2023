@@ -1,7 +1,7 @@
 'use client'
 
 import { DialogAddBook, DialogDeleteBook } from './components'
-import { useBook } from '../../../context/BookContext'
+import { useBook } from 'context/BookContext'
 import { Book } from 'types'
 
 export default function BookLayout({
@@ -9,10 +9,9 @@ export default function BookLayout({
 }: {
   children: React.ReactNode
 }) {
-  const { books, setBooks, deleteBook, dialogAddBookRef, dialogDeleteBookRef } =
-    useBook()
+  const { books, setBooks, deleteBook } = useBook()
 
-  const handleSubmitAddBook: React.FormEventHandler<HTMLFormElement> = (
+  const handleAddBook: React.FormEventHandler<HTMLFormElement> = (
     event: React.BaseSyntheticEvent,
   ) => {
     event.preventDefault()
@@ -27,16 +26,18 @@ export default function BookLayout({
     setBooks(newBooks)
   }
 
+  function handleDeleteBook(event: React.BaseSyntheticEvent) {
+    event.preventDefault()
+    const newBooks = books.filter((row) => row.rowId !== deleteBook?.rowId)
+    localStorage.setItem('books', JSON.stringify(newBooks))
+    setBooks(newBooks)
+  }
+
   return (
     <>
       {children}
-      <DialogAddBook onSubmit={handleSubmitAddBook} />
-      <DialogDeleteBook
-        ref={dialogDeleteBookRef}
-        deleteBook={deleteBook}
-        books={books}
-        setBooks={setBooks}
-      />
+      <DialogAddBook onSubmit={handleAddBook} />
+      <DialogDeleteBook onSubmit={handleDeleteBook} />
     </>
   )
 }

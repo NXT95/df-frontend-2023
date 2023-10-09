@@ -30,10 +30,7 @@
         "name": "next"
       }
     ],
-    "baseUrl": "src/",
-    "paths": {
-      "@/assets/*": ["assets/*"]
-    }
+    "baseUrl": "src/"
   },
   "include": [
     "next-env.d.ts",

@@ -1,20 +1,12 @@
 'use client'
 
-import { Pagination, Table, TableActions } from './components'
-import { useBook } from '../../../context/BookContext'
+import { Table, TableActions } from './components'
+import { useBook } from 'context/BookContext'
 import { DEFAULT_PAGE_SIZE } from 'constant'
+import { Pagination } from 'components/Pagination'
 
 export default function Books() {
-  const {
-    books,
-    searchText,
-    setSearchText,
-    setDeleteBook,
-    currentPage,
-    setCurrentPage,
-    dialogAddBookRef,
-    dialogDeleteBookRef,
-  } = useBook()
+  const { books, searchText, currentPage, setCurrentPage } = useBook()
 
   const filterBooks = books
     .filter((book) => {
@@ -29,17 +21,10 @@ export default function Books() {
 
   return (
     <>
-      <TableActions
-        dialogAddBookRef={dialogAddBookRef}
-        setSearchText={setSearchText}
-      />
+      <TableActions />
       <section>
         <div className="overflow-x-auto">
-          <Table
-            dataTable={dataTable}
-            dialogDeleteBookRef={dialogDeleteBookRef}
-            setDeleteBook={setDeleteBook}
-          />
+          <Table dataTable={dataTable} />
         </div>
         <div className="mt-5 text-right">
           <Pagination

@@ -1,6 +1,6 @@
 import { forwardRef } from 'react'
 import Image from 'next/image'
-import closeIcon from '@/assets/icons/close.svg'
+import closeIcon from 'assets/icons/close.svg'
 import { Button } from 'components/Button'
 
 interface DialogProps {

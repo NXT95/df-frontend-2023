@@ -1,9 +1,9 @@
-import { Button } from '../../../../components/Button'
+import { Button } from 'components/Button'
+import { useBook } from 'context/BookContext'
 
-export default function TableActions({
-  dialogAddBookRef,
-  setSearchText,
-}: TableActionsProps) {
+export default function TableActions() {
+  const { dialogAddBookRef, setSearchText } = useBook()
+
   function handleChangeSearchText(event: React.ChangeEvent<HTMLInputElement>) {
     setSearchText(event.target.value)
   }
@@ -28,9 +28,4 @@ export default function TableActions({
       </Button>
     </section>
   )
-}
-
-interface TableActionsProps {
-  dialogAddBookRef: React.RefObject<HTMLDialogElement>
-  setSearchText: React.Dispatch<React.SetStateAction<string>>
 }

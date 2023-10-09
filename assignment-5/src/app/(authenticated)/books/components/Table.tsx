@@ -1,15 +1,14 @@
 import { Fragment } from 'react'
 import Link from 'next/link'
-import { TABLE_COLUMNS } from '../../../../constant'
-import { Book } from '../../../../types'
-import { Button } from '../../../../components/Button'
-import { getTextOfTopic } from '../../../../utils'
+import { TABLE_COLUMNS } from 'constant'
+import { Book } from 'types'
+import { Button } from 'components/Button'
+import { getTextOfTopic } from 'utils'
+import { useBook } from 'context/BookContext'
 
-export default function Table({
-  dataTable,
-  dialogDeleteBookRef,
-  setDeleteBook,
-}: TableProps) {
+export default function Table({ dataTable }: TableProps) {
+  const { dialogDeleteBookRef, setDeleteBook } = useBook()
+
   function handleClickDeleteBook(book: Book) {
     return () => {
       setDeleteBook(book)
@@ -84,6 +83,4 @@ export default function Table({
 
 interface TableProps {
   dataTable: Book[]
-  dialogDeleteBookRef: React.RefObject<HTMLDialogElement>
-  setDeleteBook: React.Dispatch<React.SetStateAction<Book | undefined>>
 }

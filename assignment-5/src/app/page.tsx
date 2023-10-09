@@ -9,7 +9,6 @@ export default function Home() {
   const { user } = useAuth()
 
   useEffect(() => {
-    console.log('user', user)
     if (user) {
       router.push('/books')
     } else {
